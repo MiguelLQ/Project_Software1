@@ -372,7 +372,7 @@ JOIN Espacio E ON R.Cod_esp = E.Cod_esp
 JOIN Pago P ON R.cod_Pag = P.cod_Pag
 JOIN MetodPag MP ON P.cod_metd = MP.cod_metd
 WHERE V.Placa_V = 'ABC123';  -- Cambia 'ABC123' por la placa del vehículo que deseas facturar
-
+-- verificar 
 SELECT * FROM Registro WHERE Cod_V IN (SELECT Cod_V FROM Vehículo WHERE Placa_V = 'ABC123');
 SELECT * FROM Vehículo WHERE Placa_V = 'ABC123';
 
@@ -383,7 +383,45 @@ FROM
 JOIN Vehículo V ON R.Cod_V = V.Cod_V
 WHERE V.Placa_V = 'ABC123';
 
+SELECT 
+    R.Fecha_reg,
+    R.Hora_reg,
+    V.Placa_V,
+    V.Marc_V,
+    V.Model_V,
+    C.Nom_cliente,
+    C.Apell_cliente
+FROM 
+    Registro R
+JOIN Vehículo V ON R.Cod_V = V.Cod_V
+JOIN Clientes C ON R.Cod_cliente = C.Cod_cliente  -- Asegúrate de que esta columna existe
+WHERE V.Placa_V = 'ABC123';  -- Cambia 'ABC123' por la placa del vehículo
+--onsulta que muestre los espacios ocupados
+SELECT 
+    E.Cod_esp AS Codigo_Espacio,
+    E.Ubi_esp AS Ubicacion_Espacio,
+    E.Estad_esp AS Estado_Espacio,
+    C.Nom_cliente AS Nombre_Cliente,
+    C.Apell_cliente AS Apellido_Cliente,
+    V.Marc_V AS Marca_Vehiculo,
+    V.Model_V AS Modelo_Vehiculo,
+    V.Placa_V AS Placa_Vehiculo,
+    R.Fecha_reg AS Fecha_Registro,
+    R.Hora_reg AS Hora_Registro
+FROM 
+    Registro R
+JOIN 
+    Espacio E ON R.Cod_esp = E.Cod_esp
+JOIN 
+    Clientes C ON R.Cod_cliente = C.Cod_cliente
+JOIN 
+    Vehículo V ON R.Cod_V = V.Cod_V
+WHERE 
+    E.Estad_esp = TRUE  -- Solo muestra los espacios ocupados
+    AND R.Fecha_reg = '2024-09-15';  -- Cambia esta fecha por la que desees
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
 
