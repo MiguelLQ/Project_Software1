@@ -1,0 +1,165 @@
+@using Azure.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<albanaPlayaEst.Dto.AsignarVDto>
+@using Microsoft.AspNetCore.Http
+<head>
+    <!-- Agregar Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<h2 class="text-center" style="color: #007bff">Vista de Espacios</h2>
+<div class="container ">
+    <form method="get" asp-action="Index" class="d-flex justify-content-center mb-4">
+        <!-- Buscador de Descripción -->
+        <div class="form-group position-relative">
+            <label for="descripcion" class="form-label" style="color: #007bff">Buscar por Descripción</label>
+            <div class="input-group">
+                <div class="input-group-text">
+                    <i class="fas fa-search"></i> <!-- Icono de búsqueda -->
+                </div>
+                <input type="text" id="descripcion" name="descripcion" class="form-control" placeholder="Buscar por descripción" value="@ViewBag.SelectedDescripcion" />
+            </div>
+        </div>
+
+        <!-- Buscador de Ubicación -->
+        <div class="form-group ms-3 position-relative">
+            <label for="ubicacion" class="form-label" style="color: #007bff">Buscar por Ubicación</label>
+            <div class="input-group">
+                <div class="input-group-text">
+                    <i class="fas fa-map-marker-alt"></i> <!-- Icono de ubicación -->
+                </div>
+                <input type="text" id="ubicacion" name="ubicacion" class="form-control " placeholder="Buscar por ubicación" value="@ViewBag.SelectedUbicacion" />
+            </div>
+        </div>
+
+        <!-- Botón de Buscar -->
+        <button type="submit" class="btn btn-primary ms-4 d-flex mt-4 h-25 align-items-center">
+            <i class="fas fa-search me-2"></i> Buscar
+        </button>
+    </form>
+</div>
+<p class="">
+    <a href="@Url.Action("AgregarV", "Vehiculo")" class="btn btn-primary">
+        <i class="fas fa-plus fa-sm"></i> Crear Nuevo Registro
+    </a>
+</p>
+
+@if (!Model.Any())
+{
+    <p class="text-center text-danger">No se encontraron espacios para la descripción seleccionada.</p>
+}
+
+
+<div class="container p-3" id="espaciosContainer">
+    <div class="row row-cols-1 row-cols-md-4 g-2">
+        @foreach (var espacio in Model)
+        {
+        <div class="col">
+            <div class="card text-center border-0 shadow"
+                 style="border-radius: 15px; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;">
+                <div class="card-body p-2"
+                     style="background-color: @(espacio.Estad_esp ? "#fff" : "#fff");
+                         border: 2px solid @(espacio.Estad_esp ? "#d32f2f" : "#2e7d32");
+                         border-radius: 12px;">
+                    <!-- Estado -->
+                    <div class="card-header fw-bold ">
+                        @if (!espacio.Estad_esp)
+                        {
+                        <span class="badge bg-success  ">DISPONIBLE</span>
+                        }
+                        else
+                        {
+                        <span class="badge bg-danger ">OCUPADO</span>
+                        }
+                    </div>
+                    <!-- Ícono -->
+                    <div class="mb-3">
+                        @if (espacio.Estad_esp)
+                        {
+                        <i class="bi bi-car-front-fill text-danger" style="font-size: 2.5rem;"></i>
+                        }
+                        else
+                        {
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 2.5rem;"></i>
+                        }
+                    </div>
+
+                    <!-- Número de Espacio -->
+                    <h5 class="card-title fw-bold mb-2 text-uppercase">@espacio.Ubi_esp</h5>
+
+                    <!-- Categoría del Espacio -->
+                    <p class="card-text text-secondary mb-3">
+                        <i class="bi bi-tag"></i> Categoría: @espacio.Descr_esp
+                    </p>
+
+                    <!-- Botón de acción -->
+                    <div>
+                        @if (!espacio.Estad_esp)
+                        {
+                        <a href="@Url.Action("AsignarV", "Asig", new { id = espacio.Cod_esp })"
+                           class="btn btn-outline-primary btn-sm w-100 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-plus-circle me-2"></i> Asignar Vehículo
+                        </a>
+                        }
+                        else
+                        {
+                        <a href="@Url.Action("DetalleAsig", "Asig", new { id = espacio.CodReg })"
+                           class="btn btn-outline-warning btn-sm w-100 d-flex align-items-center justify-content-center">
+                            <i class="bi bi-info-circle me-2"></i> Detalle
+                        </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+}
+<style>
+    /* Estilo para la tarjeta */
+    .custom-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-radius: 12px;
+    }
+
+    /* Efecto hover */
+    .custom-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Colores personalizados para los estados */
+    .card-body {
+        border-radius: 12px;
+    }
+
+    /* Fondo y color de texto para cada estado */
+    .card-body.bg-danger {
+        background-color: #fd0303; /* Rojo */
+        width: 90%;
+    }
+
+    .card-body.bg-success {
+        background-color: #06ff10; /* Verde */
+    }
+
+    /* Botón en color claro */
+    .btn-outline-light {
+        color: #ffffff;
+        border-color: #ffffff;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    .card-header {
+        background-color: rgba(0, 0, 0, 0.11);
+    }
+
+</style>
